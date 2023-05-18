@@ -37,6 +37,7 @@ class _GameBoardState extends State<GameBoard> {
 
   // game reset state
   bool gameReset = false ;
+  bool gameOverReset = false ;
 
   @override
   void initState() {
@@ -75,9 +76,10 @@ class _GameBoardState extends State<GameBoard> {
 
         // check if game is over
         if(gameReset){
-          timer.cancel() ; // Stop timer Loop
+          if(!gameOverReset){
+            timer.cancel() ; // Stop timer Loop
+          }
           gameReset = false ;
-          gameOver = false ;
         }
 
         // move current piece down
@@ -133,6 +135,7 @@ class _GameBoardState extends State<GameBoard> {
   void resetGameButton(){
     // game Reset
     gameReset = true ;
+    gameOverReset = gameOver ;
     // Reset
     resetGame() ;
   }
