@@ -11,12 +11,11 @@ import 'package:tetris_game/help/piece.dart';
   A non empty space will have the color to represent the landed pieces
 */
 List<List<Tetromino?>> gameBoard = List.generate(
-  collLength,
-  (i) => List.generate(
-    rowLength,
-    (j) => null,
-  )
-);
+    collLength,
+    (i) => List.generate(
+          rowLength,
+          (j) => null,
+        ));
 
 class GameBoard extends StatefulWidget {
   const GameBoard({Key? key}) : super(key: key);
@@ -27,17 +26,18 @@ class GameBoard extends StatefulWidget {
 
 class _GameBoardState extends State<GameBoard> {
   // current tetris piece
-  Piece currentPiece = Piece(type: Tetromino.L );
+  Piece currentPiece = Piece(type: Tetromino.L);
 
   // currentScore
   int currentScore = 0;
 
   // game over state
-  bool gameOver = false ;
+  bool gameOver = false;
 
   // game reset state
-  bool gameReset = false ;
-  bool gameOverReset = false ;
+  bool gameReset = false;
+
+  bool gameOverReset = false;
 
   @override
   void initState() {
@@ -63,23 +63,23 @@ class _GameBoardState extends State<GameBoard> {
     Timer.periodic(frameRate, (timer) {
       setState(() {
         // clear Lines
-        clearLines() ;
+        clearLines();
 
         // check landing
         checkLanding();
 
         // check if game is over
-        if(gameOver){
-          timer.cancel() ; // Stop timer Loop
-          showGameOverDialog() ;
+        if (gameOver) {
+          timer.cancel(); // Stop timer Loop
+          showGameOverDialog();
         }
 
         // check if game is over
-        if(gameReset){
-          if(!gameOverReset){
-            timer.cancel() ; // Stop timer Loop
+        if (gameReset) {
+          if (!gameOverReset) {
+            timer.cancel(); // Stop timer Loop
           }
-          gameReset = false ;
+          gameReset = false;
         }
 
         // move current piece down
@@ -89,7 +89,7 @@ class _GameBoardState extends State<GameBoard> {
   }
 
   // game over message
-  void showGameOverDialog(){
+  void showGameOverDialog() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -97,47 +97,46 @@ class _GameBoardState extends State<GameBoard> {
         content: Text("Your score is: $currentScore"),
         actions: [
           TextButton(
-            onPressed: (){
+            onPressed: () {
               // reset the game
-              resetGame() ;
-              Navigator.pop(context) ;
+              resetGame();
+              Navigator.pop(context);
             },
-            child:Text("Play Again") ,
+            child: Text("Play Again"),
           ),
         ],
-      ) ,
+      ),
     );
   }
 
   //reset game
-  void resetGame(){
+  void resetGame() {
     // clear the game boar
     gameBoard = List.generate(
-      collLength,
-      (i) => List.generate(
-        rowLength,
-        (j) => null,
-      )
-    );
+        collLength,
+        (i) => List.generate(
+              rowLength,
+              (j) => null,
+            ));
 
     // new game
-    gameOver = false ;
-    currentScore = 0 ;
+    gameOver = false;
+    currentScore = 0;
 
     // create new Piece
-    createNewPiece() ;
+    createNewPiece();
 
     // start game
-    startGame() ;
+    startGame();
   }
 
   //reset game in Reset button
-  void resetGameButton(){
+  void resetGameButton() {
     // game Reset
-    gameReset = true ;
-    gameOverReset = gameOver ;
+    gameReset = true;
+    gameOverReset = gameOver;
     // Reset
-    resetGame() ;
+    resetGame();
   }
 
   // check for collision in a future position
@@ -205,8 +204,8 @@ class _GameBoardState extends State<GameBoard> {
          the top level but if there is already a piece in the top level when the new
          piece is created , then game is over
     */
-    if(isGameOver()){
-      gameOver = true ;
+    if (isGameOver()) {
+      gameOver = true;
     }
   }
 
@@ -272,96 +271,109 @@ class _GameBoardState extends State<GameBoard> {
   }
 
   // Game Over Methoo
-  bool isGameOver(){
+  bool isGameOver() {
     // check if any colums in the top are filled
-    for(int col = 0 ; col < rowLength ; col++){
+    for (int col = 0; col < rowLength; col++) {
       // first row , any col
-      if(gameBoard[0][col] != null){
-        return true ;
+      if (gameBoard[0][col] != null) {
+        return true;
       }
     }
 
     // if the top row is empty, the game is not over
-    return false ;
+    return false;
   }
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+
+    /*24 is for notification bar on Android*/
+    // kToolbarHeight >> The height of the toolbar component of the [AppBar].
+    final double itemHeight = (((size.height / 15 ) * 12 ) / collLength ) - 2 ;
+    final double itemWidth = size.width / rowLength;
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: Column(
         children: [
-          // game Grid
+          // game Grid > 10
           Expanded(
-            child: GridView.builder(
+            flex: 12 ,
+            child: GridView.count(
               // Not Scrolle
-              physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: rowLength * collLength,
+              physics: const NeverScrollableScrollPhysics(),
+              // width == height >> is Defoult in GridView.build
+              // childAspectRatio >> width != height >> is Defoult in GridView.count
+              childAspectRatio: (itemWidth / itemHeight),
+              shrinkWrap: true,
+              crossAxisCount: rowLength,
               // Distribution of parts
-              // التوزيع للقطع من Grid
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: rowLength,
-              ),
-              // width == height >> is Defoult in GridView
-              itemBuilder: (context, index) {
-                //get rpw and col of each index
-                int row = (index / rowLength).floor();
-                int col = index % rowLength;
+              children: List.generate(
+                rowLength * collLength,
+                (index) {
+                  //get rpw and col of each index
+                  int row = (index / rowLength).floor();
+                  int col = index % rowLength;
 
-                // current piece
-                if (currentPiece.position.contains(index)) {
-                  return Pixel(
-                    color: currentPiece.color,
-                  );
-                } else if (gameBoard[row][col] != null) {
-                  final Tetromino? tetromino = gameBoard[row][col];
-                  return Pixel(
-                    color: tetrominoColors[tetromino],
-                  );
-                }
-                // black pixel
-                else {
-                  return Pixel(
-                    color: Colors.grey[900],
-                  );
-                }
-              },
+                  // current piece
+                  if (currentPiece.position.contains(index)) {
+                    return Pixel(
+                      color: currentPiece.color,
+                    );
+                  } else if (gameBoard[row][col] != null) {
+                    final Tetromino? tetromino = gameBoard[row][col];
+                    return Pixel(
+                      color: tetrominoColors[tetromino],
+                    );
+                  }
+                  // black pixel
+                  else {
+                    return Pixel(
+                      color: Colors.grey[900],
+                    );
+                  }
+                },
+              ),
             ),
           ),
 
-          // SCORE
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                "Score: " + currentScore.toString(),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18 ,
-                ),
-              ),
-              TextButton(
-                onPressed: (){
-                 // timer.cancel() ; // Stop timer Loop
-                  // reset the game
-                  resetGameButton() ;
-                },
-                child: Text(
-                  "Reset",
+          // SCORE > 1
+          Expanded(
+            flex: 1,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  "Score: " + currentScore.toString(),
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 18 ,
+                    fontSize: 18,
                   ),
                 ),
-              ),
-            ],
+                TextButton(
+                  onPressed: () {
+                    // timer.cancel() ; // Stop timer Loop
+                    // reset the game
+                    resetGameButton();
+                  },
+                  child: Text(
+                    "Reset",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
 
-          // Game Controle
-          Padding(
-            padding: const EdgeInsets.only(bottom: 20) ,
+          // Game Controle > 1
+          Expanded(
+            flex: 1,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -387,6 +399,10 @@ class _GameBoardState extends State<GameBoard> {
                 ),
               ],
             ),
+          ),
+
+          Spacer(
+            flex: 1 ,
           ),
         ],
       ),
