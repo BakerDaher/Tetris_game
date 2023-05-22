@@ -37,10 +37,6 @@ A new Flutter project.
 </tr></table>
 </div>
 
-![alt text](/assets/images/design1.png?raw=true)
-![alt text](/assets/images/design2.png?raw=true)
-![alt text](/assets/images/design3.png?raw=true)
-![alt text](/assets/images/design4.png?raw=true)
 
 ## Getting Started
 
