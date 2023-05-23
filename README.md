@@ -6,14 +6,9 @@ A new Flutter project.
 
 <div style="text-align: center">
 <table><tr>
-   </td>
 
    <td style="text-align: center">
     <img width="180" alt="BMW" src="/assets/images/design1.png">
-
-  </td>
-
-    
 
   </td>
 
