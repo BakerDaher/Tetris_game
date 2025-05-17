@@ -2,6 +2,40 @@
 
 A new Flutter project.
 
+<<<<<<< HEAD
+=======
+## Design
+
+<div style="text-align: center">
+<table><tr>
+
+   <td style="text-align: center">
+    <img width="180" alt="BMW" src="/assets/images/design1.png">
+
+  </td>
+
+   <td style="text-align: center">
+    <img width="180" alt="BMW" src="/assets/images/design2.png">
+
+  </td>
+
+  <td style="text-align: center">
+    <img width="180" alt="BlueAquilae Twitter Meteo" src="/assets/images/design3.png">
+        Rotate
+  </td>
+
+  <td style="text-align: center">
+    <img width="180" alt="BlueAquilae Twitter Meteo" src="/assets/images/design4.png">
+  
+  Game Over
+  </td>
+
+
+</tr></table>
+</div>
+
+
+>>>>>>> fa2b6c9afe2216fd8f44518da99436f26bb8747a
 ## Getting Started
 
 This project is a starting point for a Flutter application.
